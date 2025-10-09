@@ -1,0 +1,21 @@
+{
+  "name": "ERP Система",
+  "short_name": "ERP",
+  "description": "Система управления бизнесом - Касса, Договоры, Задолженность, Прибыль",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0d6efd",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/vite.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["business", "finance", "productivity"],
+  "lang": "ru",
+  "dir": "ltr"
+}

@@ -1,0 +1,303 @@
+import {
+  DashboardSummary,
+  DashboardMetrics,
+  CashAccount,
+  Transaction,
+  Contract,
+  Debt,
+  ProfitSummary,
+  ProfitTrendData,
+  ProfitByCategory,
+  CashFlowData,
+  DebtOverviewData
+} from '../types'
+
+// Mock Dashboard Data
+export const mockDashboardSummary: DashboardSummary = {
+  totalCashBalance: 125000,
+  totalActiveContracts: 12,
+  totalSupplierDebts: 45000,
+  totalClientDebts: 68000,
+  upcomingPayments: 8,
+  monthlyProfit: 32000,
+  monthlyRevenue: 95000,
+  monthlyExpenses: 63000,
+}
+
+export const mockCashFlowData: CashFlowData[] = [
+  { date: '2024-01', income: 85000, expense: 52000, balance: 33000 },
+  { date: '2024-02', income: 92000, expense: 58000, balance: 34000 },
+  { date: '2024-03', income: 78000, expense: 61000, balance: 17000 },
+  { date: '2024-04', income: 95000, expense: 63000, balance: 32000 },
+  { date: '2024-05', income: 88000, expense: 55000, balance: 33000 },
+  { date: '2024-06', income: 102000, expense: 67000, balance: 35000 },
+]
+
+export const mockProfitTrend: ProfitTrendData[] = [
+  { month: 'Jan', revenue: 85000, expenses: 52000, profit: 33000 },
+  { month: 'Feb', revenue: 92000, expenses: 58000, profit: 34000 },
+  { month: 'Mar', revenue: 78000, expenses: 61000, profit: 17000 },
+  { month: 'Apr', revenue: 95000, expenses: 63000, profit: 32000 },
+  { month: 'May', revenue: 88000, expenses: 55000, profit: 33000 },
+  { month: 'Jun', revenue: 102000, expenses: 67000, profit: 35000 },
+]
+
+export const mockDebtOverview: DebtOverviewData = {
+  totalSupplierDebt: 45000,
+  totalClientDebt: 68000,
+  overdueSupplierDebt: 12000,
+  overdueClientDebt: 8000,
+}
+
+export const mockDashboardMetrics: DashboardMetrics = {
+  cashFlow: mockCashFlowData,
+  profitTrend: mockProfitTrend,
+  debtOverview: mockDebtOverview,
+  recentTransactions: [],
+}
+
+// Mock Cash Accounts
+export const mockCashAccounts: CashAccount[] = [
+  {
+    id: 1,
+    name: 'Main Business Account',
+    accountType: 'BANK',
+    currency: 'USD',
+    balance: 75000,
+    branch: 'Headquarters',
+    isActive: true,
+    createdAt: '2024-01-15T10:00:00Z',
+  },
+  {
+    id: 2,
+    name: 'Petty Cash',
+    accountType: 'CASH',
+    currency: 'USD',
+    balance: 5000,
+    isActive: true,
+    createdAt: '2024-01-15T10:00:00Z',
+  },
+  {
+    id: 3,
+    name: 'Corporate Credit Card',
+    accountType: 'CREDIT_CARD',
+    currency: 'USD',
+    balance: 25000,
+    isActive: true,
+    createdAt: '2024-02-01T10:00:00Z',
+  },
+  {
+    id: 4,
+    name: 'Branch Office Account',
+    accountType: 'BANK',
+    currency: 'USD',
+    balance: 20000,
+    branch: 'Downtown Branch',
+    isActive: true,
+    createdAt: '2024-03-10T10:00:00Z',
+  },
+]
+
+// Mock Transactions
+export const mockTransactions: Transaction[] = [
+  {
+    id: 1,
+    accountId: 1,
+    accountName: 'Main Business Account',
+    type: 'INCOME',
+    amount: 15000,
+    category: 'Sales',
+    description: 'Payment from ABC Corp',
+    date: '2024-06-15T10:30:00Z',
+    client: 'ABC Corp',
+    branch: 'Headquarters',
+    createdBy: 'admin',
+    createdAt: '2024-06-15T10:30:00Z',
+  },
+  {
+    id: 2,
+    accountId: 1,
+    accountName: 'Main Business Account',
+    type: 'EXPENSE',
+    amount: 3500,
+    category: 'Office Supplies',
+    description: 'Monthly office supplies purchase',
+    date: '2024-06-14T14:20:00Z',
+    createdBy: 'admin',
+    createdAt: '2024-06-14T14:20:00Z',
+  },
+  {
+    id: 3,
+    accountId: 2,
+    accountName: 'Petty Cash',
+    type: 'EXPENSE',
+    amount: 250,
+    category: 'Miscellaneous',
+    description: 'Team lunch',
+    date: '2024-06-13T12:00:00Z',
+    createdBy: 'manager',
+    createdAt: '2024-06-13T12:00:00Z',
+  },
+  {
+    id: 4,
+    accountId: 1,
+    accountName: 'Main Business Account',
+    type: 'INCOME',
+    amount: 22000,
+    category: 'Services',
+    description: 'Consulting services - XYZ Ltd',
+    date: '2024-06-10T09:15:00Z',
+    client: 'XYZ Ltd',
+    createdBy: 'admin',
+    createdAt: '2024-06-10T09:15:00Z',
+  },
+]
+
+// Mock Contracts
+export const mockContracts: Contract[] = [
+  {
+    id: 1,
+    contractNumber: 'CNT-2024-001',
+    title: 'Software Development Services',
+    client: 'Tech Solutions Inc',
+    type: 'SERVICE',
+    status: 'ACTIVE',
+    amount: 150000,
+    startDate: '2024-01-01T00:00:00Z',
+    endDate: '2024-12-31T00:00:00Z',
+    paymentTerms: 'Monthly installments',
+    description: 'Full-stack development services for enterprise application',
+    createdAt: '2023-12-15T10:00:00Z',
+    updatedAt: '2024-01-01T10:00:00Z',
+  },
+  {
+    id: 2,
+    contractNumber: 'CNT-2024-002',
+    title: 'Product Supply Agreement',
+    client: 'Global Retail Corp',
+    type: 'PRODUCT',
+    status: 'ACTIVE',
+    amount: 85000,
+    startDate: '2024-02-01T00:00:00Z',
+    endDate: '2024-07-31T00:00:00Z',
+    paymentTerms: 'Net 30',
+    description: 'Supply of electronic components',
+    createdAt: '2024-01-20T10:00:00Z',
+    updatedAt: '2024-02-01T10:00:00Z',
+  },
+  {
+    id: 3,
+    contractNumber: 'CNT-2024-003',
+    title: 'Consulting Services',
+    client: 'StartUp Ventures',
+    type: 'SERVICE',
+    status: 'DRAFT',
+    amount: 45000,
+    startDate: '2024-07-01T00:00:00Z',
+    endDate: '2024-12-31T00:00:00Z',
+    paymentTerms: 'Quarterly',
+    description: 'Business strategy consulting',
+    createdAt: '2024-06-01T10:00:00Z',
+    updatedAt: '2024-06-10T10:00:00Z',
+  },
+  {
+    id: 4,
+    contractNumber: 'CNT-2023-015',
+    title: 'Annual Maintenance Contract',
+    client: 'Industrial Systems Ltd',
+    type: 'SERVICE',
+    status: 'COMPLETED',
+    amount: 60000,
+    startDate: '2023-01-01T00:00:00Z',
+    endDate: '2023-12-31T00:00:00Z',
+    paymentTerms: 'Annual',
+    description: 'System maintenance and support',
+    createdAt: '2022-12-01T10:00:00Z',
+    updatedAt: '2024-01-05T10:00:00Z',
+  },
+]
+
+// Mock Debts
+export const mockDebts: Debt[] = [
+  {
+    id: 1,
+    type: 'SUPPLIER',
+    counterparty: 'Office Supplies Co',
+    amount: 15000,
+    paidAmount: 10000,
+    remainingAmount: 5000,
+    dueDate: '2024-07-15T00:00:00Z',
+    status: 'PARTIAL',
+    description: 'Office furniture and equipment',
+    createdAt: '2024-05-01T10:00:00Z',
+    updatedAt: '2024-06-01T10:00:00Z',
+  },
+  {
+    id: 2,
+    type: 'SUPPLIER',
+    counterparty: 'Tech Hardware Inc',
+    amount: 25000,
+    paidAmount: 0,
+    remainingAmount: 25000,
+    dueDate: '2024-06-30T00:00:00Z',
+    status: 'OVERDUE',
+    description: 'Computer hardware purchase',
+    createdAt: '2024-05-15T10:00:00Z',
+    updatedAt: '2024-05-15T10:00:00Z',
+  },
+  {
+    id: 3,
+    type: 'CLIENT',
+    counterparty: 'ABC Corporation',
+    amount: 35000,
+    paidAmount: 15000,
+    remainingAmount: 20000,
+    dueDate: '2024-07-30T00:00:00Z',
+    status: 'PARTIAL',
+    description: 'Consulting services invoice #1234',
+    createdAt: '2024-05-20T10:00:00Z',
+    updatedAt: '2024-06-10T10:00:00Z',
+  },
+  {
+    id: 4,
+    type: 'CLIENT',
+    counterparty: 'XYZ Enterprises',
+    amount: 48000,
+    paidAmount: 0,
+    remainingAmount: 48000,
+    dueDate: '2024-08-15T00:00:00Z',
+    status: 'PENDING',
+    description: 'Software development project milestone 2',
+    createdAt: '2024-06-01T10:00:00Z',
+    updatedAt: '2024-06-01T10:00:00Z',
+  },
+  {
+    id: 5,
+    type: 'SUPPLIER',
+    counterparty: 'Utilities Provider',
+    amount: 3500,
+    paidAmount: 0,
+    remainingAmount: 3500,
+    dueDate: '2024-07-05T00:00:00Z',
+    status: 'PENDING',
+    description: 'Monthly utilities bill',
+    createdAt: '2024-06-15T10:00:00Z',
+    updatedAt: '2024-06-15T10:00:00Z',
+  },
+]
+
+// Mock Profit Data
+export const mockProfitSummary: ProfitSummary = {
+  totalRevenue: 540000,
+  totalExpenses: 356000,
+  netProfit: 184000,
+  profitMargin: 34.1,
+  period: '2024',
+}
+
+export const mockProfitByCategory: ProfitByCategory[] = [
+  { category: 'Software Services', amount: 280000, percentage: 51.9 },
+  { category: 'Product Sales', amount: 150000, percentage: 27.8 },
+  { category: 'Consulting', amount: 85000, percentage: 15.7 },
+  { category: 'Other', amount: 25000, percentage: 4.6 },
+]
