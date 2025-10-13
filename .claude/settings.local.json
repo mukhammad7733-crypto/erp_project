@@ -10,7 +10,20 @@
       "Bash(psql:*)",
       "Bash(test:*)",
       "Bash(npm install)",
-      "Bash(npm run dev:*)"
+      "Bash(npm run dev:*)",
+      "Bash(winget:*)",
+      "Bash(choco:*)",
+      "Bash(scoop:*)",
+      "Read(//c/Program Files/Eclipse Adoptium/**)",
+      "Bash(export JAVA_HOME=\"/c/Program Files/Eclipse Adoptium/jdk-17.0.16.8-hotspot\")",
+      "Bash(export PATH=\"$JAVA_HOME/bin:$PATH\")",
+      "Bash(curl:*)",
+      "Read(//c/Program Files/**)",
+      "Bash(unzip:*)",
+      "Bash(ls:*)",
+      "Bash(export PATH=\"$JAVA_HOME/bin:$HOME/apache-maven-3.9.6/bin:$PATH\")",
+      "Bash(netstat:*)",
+      "Bash(findstr:*)"
     ],
     "deny": [],
     "ask": []
