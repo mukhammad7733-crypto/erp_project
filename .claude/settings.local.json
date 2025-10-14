@@ -23,7 +23,8 @@
       "Bash(ls:*)",
       "Bash(export PATH=\"$JAVA_HOME/bin:$HOME/apache-maven-3.9.6/bin:$PATH\")",
       "Bash(netstat:*)",
-      "Bash(findstr:*)"
+      "Bash(findstr:*)",
+      "Bash(taskkill:*)"
     ],
     "deny": [],
     "ask": []

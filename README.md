@@ -1,6 +1,6 @@
-# ERP System for Small and Medium Businesses
+# ERP System for Small and Medium Businesses - Frontend Demo
 
-A modern, full-stack ERP system designed for small and medium businesses with comprehensive financial management features.
+A modern, frontend-only ERP system designed for small and medium businesses with comprehensive financial management features. This version uses mock data for demonstration purposes.
 
 ## Features
 
@@ -17,36 +17,24 @@ A modern, full-stack ERP system designed for small and medium businesses with co
 
 ## Tech Stack
 
-### Backend
-- Java 17
-- Spring Boot 3.2
-- Spring Security with JWT
-- Spring Data JPA
-- PostgreSQL 15
-- Flyway (Database Migrations)
-- Maven
-
-### Frontend
 - React 18
 - TypeScript
-- Material-UI
+- Bootstrap 5 & React Bootstrap
 - Redux Toolkit
 - React Router v6
-- Recharts
+- Recharts (Analytics & Charts)
 - Axios
 - Vite
+- Mock Data (In-memory data simulation)
 
 ## Prerequisites
 
-- Java 17 or higher
 - Node.js 18 or higher
-- PostgreSQL 15 or higher
-- Maven 3.9 or higher
-- Docker and Docker Compose (optional, for containerized setup)
+- npm or yarn package manager
 
 ## Installation
 
-### Option 1: Docker Setup (Recommended)
+### Quick Start (Recommended)
 
 1. Clone the repository:
 ```bash
@@ -54,138 +42,82 @@ git clone <repository-url>
 cd erp
 ```
 
-2. Start all services:
-```bash
-docker-compose up -d
-```
-
-3. Access the application:
-   - Frontend: http://localhost:3000
-   - Backend API: http://localhost:8080/api
-   - Swagger UI: http://localhost:8080/api/swagger-ui.html
-
-### Option 2: Manual Setup
-
-#### Database Setup
-
-1. Install PostgreSQL 15
-2. Create database and user:
-```bash
-psql -U postgres
-```
-
-```sql
-CREATE DATABASE erp_db;
-CREATE USER erp_user WITH PASSWORD 'erp_password';
-GRANT ALL PRIVILEGES ON DATABASE erp_db TO erp_user;
-```
-
-Or use the provided script:
-```bash
-psql -U postgres -f database/init.sql
-```
-
-#### Backend Setup
-
-1. Navigate to backend directory:
-```bash
-cd backend
-```
-
-2. Update database credentials in `src/main/resources/application.yml` if needed
-
-3. Build the project:
-```bash
-mvn clean install
-```
-
-4. Run the application:
-```bash
-mvn spring-boot:run
-```
-
-Or run with a specific profile:
-```bash
-mvn spring-boot:run -Dspring-boot.run.profiles=dev
-```
-
-The backend will start on http://localhost:8080
-
-#### Frontend Setup
-
-1. Navigate to frontend directory:
+2. Navigate to frontend directory:
 ```bash
 cd frontend
 ```
 
-2. Install dependencies:
+3. Install dependencies:
 ```bash
 npm install
 ```
 
-3. Start the development server:
+4. Start the development server:
 ```bash
 npm run dev
 ```
 
-The frontend will start on http://localhost:3000
+5. Access the application:
+   - Frontend: http://localhost:3000
+   - Login with any credentials (mock authentication)
+
+### Using Docker (Optional)
+
+1. Start the application:
+```bash
+docker-compose up --build
+```
+
+2. Access at http://localhost:3000
 
 ## Project Structure
 
 ```
 erp/
-├── backend/                 # Spring Boot backend
+├── frontend/                # React frontend application
 │   ├── src/
-│   │   ├── main/
-│   │   │   ├── java/com/erp/
-│   │   │   │   ├── config/           # Configuration classes
-│   │   │   │   ├── controller/       # REST controllers
-│   │   │   │   ├── service/          # Business logic
-│   │   │   │   ├── repository/       # Data access layer
-│   │   │   │   ├── model/            # Entity models
-│   │   │   │   ├── dto/              # Data transfer objects
-│   │   │   │   ├── security/         # Security & JWT
-│   │   │   │   ├── exception/        # Exception handling
-│   │   │   │   └── util/             # Utility classes
-│   │   │   └── resources/
-│   │   │       ├── application.yml   # Main configuration
-│   │   │       └── db/migration/     # Flyway migrations
-│   │   └── test/                     # Unit & integration tests
-│   ├── pom.xml
-│   └── Dockerfile
-├── frontend/                # React frontend
-│   ├── src/
-│   │   ├── components/      # Reusable components
+│   │   ├── components/      # Reusable UI components
 │   │   ├── pages/           # Page components
 │   │   ├── layouts/         # Layout components
 │   │   ├── store/           # Redux store & slices
-│   │   ├── services/        # API services
-│   │   ├── hooks/           # Custom hooks
+│   │   ├── services/        # API services with mock data
+│   │   │   ├── mockData.ts  # Mock data definitions
+│   │   │   ├── authService.ts
+│   │   │   ├── cashService.ts
+│   │   │   ├── contractService.ts
+│   │   │   ├── debtService.ts
+│   │   │   └── profitService.ts
+│   │   ├── hooks/           # Custom React hooks
 │   │   ├── utils/           # Utility functions
-│   │   ├── types/           # TypeScript types
+│   │   ├── types/           # TypeScript type definitions
 │   │   ├── App.tsx          # Main app component
 │   │   └── main.tsx         # Entry point
 │   ├── package.json
 │   ├── tsconfig.json
 │   ├── vite.config.ts
 │   └── Dockerfile
-├── database/               # Database scripts
-│   └── init.sql           # Database initialization
-├── docs/                  # Documentation
-├── docker-compose.yml     # Docker Compose configuration
-├── ARCHITECTURE.md        # System architecture documentation
-└── README.md             # This file
+├── docs/                    # Documentation
+├── docker-compose.yml       # Docker configuration (optional)
+├── ARCHITECTURE.md          # System architecture documentation
+└── README.md               # This file
 ```
 
-## API Documentation
+## Mock Data
 
-Once the backend is running, you can access the interactive API documentation at:
-- Swagger UI: http://localhost:8080/api/swagger-ui.html
-- OpenAPI JSON: http://localhost:8080/api/api-docs
+This application uses in-memory mock data for demonstration purposes. All data is stored in `frontend/src/services/mockData.ts` and includes:
 
-## Default User Roles
+- **Dashboard metrics** - Revenue, expenses, cash flow
+- **Cash accounts** - Bank accounts, petty cash, credit cards
+- **Transactions** - Income and expense records
+- **Contracts** - Active, draft, and completed contracts
+- **Debts** - Supplier and client debts with payment tracking
+- **Profit analytics** - Monthly trends and category breakdowns
 
-The system includes the following roles:
+## Authentication
+
+The application uses mock authentication. You can log in with any username and password for demonstration purposes.
+
+Default demo roles available:
 - **ADMIN**: Full system access
 - **MANAGER**: Access to all modules except system settings
 - **ACCOUNTANT**: Access to financial modules (cash, debts, profit)
@@ -193,122 +125,81 @@ The system includes the following roles:
 
 ## Environment Variables
 
-### Backend
-- `SPRING_DATASOURCE_URL`: Database connection URL
-- `SPRING_DATASOURCE_USERNAME`: Database username
-- `SPRING_DATASOURCE_PASSWORD`: Database password
-- `JWT_SECRET`: Secret key for JWT token generation
-- `MAIL_USERNAME`: Email account for notifications
-- `MAIL_PASSWORD`: Email password
-
-### Frontend
-- `VITE_API_URL`: Backend API URL
+- `VITE_API_URL`: Backend API URL (not used in mock mode, but kept for future backend integration)
 
 ## Development
 
 ### Running Tests
 
-Backend:
-```bash
-cd backend
-mvn test
-```
-
-Frontend:
 ```bash
 cd frontend
 npm test
 ```
 
-### Building for Production
+### Linting
 
-Backend:
 ```bash
-cd backend
-mvn clean package
-java -jar target/erp-backend-1.0.0.jar
+cd frontend
+npm run lint
 ```
 
-Frontend:
+### Building for Production
+
 ```bash
 cd frontend
 npm run build
 # Build output will be in the dist/ directory
 ```
 
-## Database Migrations
+The production build can be served with any static file server:
+```bash
+npm run preview
+```
 
-The project uses Flyway for database migrations. Migration scripts are located in `backend/src/main/resources/db/migration/`.
+## Features & Pages
 
-To create a new migration:
-1. Create a new SQL file in the migrations folder with naming convention: `V{version}__{description}.sql`
-   Example: `V2__add_payment_table.sql`
-2. Flyway will automatically apply the migration on application startup
+### Available Pages
+- **Login/Register** - Mock authentication (accepts any credentials)
+- **Dashboard** - Overview with key metrics and charts
+- **Cash Management** - Manage accounts and transactions
+- **Contracts** - Create, view, and manage contracts
+- **Debts** - Track supplier and client debts
+- **Profit Analytics** - View revenue, expenses, and profit trends
+- **Reports** - Generate financial reports
 
-## API Endpoints
+### Mock API Operations
 
-### Authentication
-- `POST /api/auth/register` - Register new user
-- `POST /api/auth/login` - User login
-- `POST /api/auth/refresh` - Refresh token
-- `POST /api/auth/logout` - User logout
+All CRUD operations work with in-memory data:
+- **Create**: Add new items (persists during session)
+- **Read**: View lists and details
+- **Update**: Modify existing items
+- **Delete**: Remove items
 
-### Dashboard
-- `GET /api/dashboard/summary` - Get dashboard summary
-- `GET /api/dashboard/metrics` - Get key metrics
-
-### Cash Management
-- `GET /api/cash/accounts` - List all cash accounts
-- `POST /api/cash/accounts` - Create cash account
-- `GET /api/cash/transactions` - List transactions
-- `POST /api/cash/transactions` - Create transaction
-- `GET /api/cash/balance` - Get balance summary
-
-### Contracts
-- `GET /api/contracts` - List contracts (with filtering)
-- `POST /api/contracts` - Create contract
-- `GET /api/contracts/{id}` - Get contract details
-- `PUT /api/contracts/{id}` - Update contract
-- `DELETE /api/contracts/{id}` - Delete contract
-- `POST /api/contracts/{id}/documents` - Upload document
-
-### Debts
-- `GET /api/debts` - List debts
-- `POST /api/debts` - Create debt record
-- `GET /api/debts/{id}` - Get debt details
-- `PUT /api/debts/{id}` - Update debt
-- `POST /api/debts/{id}/payments` - Record payment
-
-### Profit Analytics
-- `GET /api/profit/summary` - Get profit summary
-- `GET /api/profit/monthly` - Get monthly profit data
-- `GET /api/profit/trends` - Get profit trends
-
-### Notifications
-- `GET /api/notifications` - List user notifications
-- `PUT /api/notifications/{id}/read` - Mark as read
-- `DELETE /api/notifications/{id}` - Delete notification
+**Note**: Data resets when the application is refreshed as it's stored in memory.
 
 ## Troubleshooting
 
-### Database Connection Issues
-- Ensure PostgreSQL is running
-- Verify database credentials in `application.yml`
-- Check if port 5432 is available
+### Port Already in Use
+If port 3000 is already in use:
+- The Vite dev server will automatically try the next available port
+- Or specify a different port in `vite.config.ts`
 
-### Backend Port Already in Use
-- Change the port in `application.yml`:
-```yaml
-server:
-  port: 8081  # Change to available port
-```
-
-### Frontend Build Issues
-- Clear node_modules and reinstall:
+### Build Issues
+Clear node_modules and reinstall:
 ```bash
+cd frontend
 rm -rf node_modules package-lock.json
 npm install
 ```
+
+### TypeScript Errors
+Run the type checker:
+```bash
+npm run build
+```
+
+### Mock Data Not Updating
+Changes to mock data in `mockData.ts` require a page refresh. The data is stored in memory and resets on page reload.
 
 ## Contributing
 
@@ -328,19 +219,27 @@ For support, email support@erp.com or open an issue in the repository.
 
 ## Roadmap
 
-- [ ] Mobile applications (iOS/Android)
-- [ ] Advanced analytics with ML
-- [ ] Multi-currency support
-- [ ] Advanced reporting with custom templates
-- [ ] Real-time collaboration features
-- [ ] Complete 1C integration
-- [ ] Email notifications
-- [ ] SMS notifications
-- [ ] Two-factor authentication
-- [ ] Export to various formats (Excel, PDF, CSV)
-- [ ] Inventory management module
-- [ ] HR management module
-- [ ] Project management integration
+### Current Features (Mock Mode)
+- [x] Dashboard with analytics
+- [x] Cash management
+- [x] Contract management
+- [x] Debt tracking
+- [x] Profit analytics
+- [x] Mock authentication
+- [x] Responsive design
+
+### Future Enhancements
+- [ ] Backend API integration
+- [ ] Real database persistence
+- [ ] Advanced filtering and search
+- [ ] Export to Excel, PDF, CSV
+- [ ] Advanced data visualization
+- [ ] Dark mode theme
+- [ ] Multi-language support
+- [ ] Offline mode with IndexedDB
+- [ ] Enhanced mobile experience
+- [ ] Printable reports
+- [ ] Data import functionality
 
 ## Authors
 
@@ -348,6 +247,7 @@ For support, email support@erp.com or open an issue in the repository.
 
 ## Acknowledgments
 
-- Spring Boot team for the excellent framework
 - React team for the powerful UI library
-- Material-UI for beautiful components
+- Bootstrap team for the excellent component framework
+- Vite team for the fast build tool
+- Recharts for beautiful data visualization

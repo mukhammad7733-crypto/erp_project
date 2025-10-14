@@ -18,10 +18,12 @@ const DashboardLayout = () => {
 
   const navItems = [
     { path: '/', label: 'Общая часть', icon: 'bi-speedometer2' },
-    { path: '/cash', label: 'Касса', icon: 'bi-cash-stack' },
+    { path: '/clients', label: 'Клиенты', icon: 'bi-people' },
     { path: '/contracts', label: 'Договоры', icon: 'bi-file-earmark-text' },
     { path: '/debts', label: 'Задолженность', icon: 'bi-credit-card' },
-    { path: '/profit', label: 'Прибыль', icon: 'bi-graph-up' },
+    { path: '/team', label: 'Команда', icon: 'bi-people-fill' },
+    { path: '/warehouse', label: 'Склад', icon: 'bi-box-seam' },
+    { path: '/settings', label: 'Настройки', icon: 'bi-gear' },
   ]
 
   return (
@@ -43,6 +45,31 @@ const DashboardLayout = () => {
             <span className="d-none d-sm-inline">ERP Система</span>
             <span className="d-inline d-sm-none">ERP</span>
           </Navbar.Brand>
+
+          <Nav className="me-auto ms-3 d-flex flex-row gap-1">
+            <Nav.Link
+              as={Link}
+              to="/cash"
+              className={`text-white fw-semibold d-flex align-items-center ${
+                location.pathname === '/cash' ? 'border-bottom border-2 border-white' : ''
+              }`}
+              style={{ minHeight: '44px' }}
+            >
+              <i className="bi bi-cash-stack me-2"></i>
+              Касса
+            </Nav.Link>
+            <Nav.Link
+              as={Link}
+              to="/profit"
+              className={`text-white fw-semibold d-flex align-items-center ${
+                location.pathname === '/profit' ? 'border-bottom border-2 border-white' : ''
+              }`}
+              style={{ minHeight: '44px' }}
+            >
+              <i className="bi bi-graph-up me-2"></i>
+              Прибыль
+            </Nav.Link>
+          </Nav>
 
           <Nav className="ms-auto align-items-center gap-2">
             <Nav.Item className="text-white me-2 d-none d-md-flex align-items-center">

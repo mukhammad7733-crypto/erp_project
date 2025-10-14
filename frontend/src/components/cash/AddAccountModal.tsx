@@ -13,7 +13,7 @@ interface AddAccountModalProps {
 
 interface AccountFormData {
   name: string
-  accountType: 'CASH' | 'BANK' | 'CREDIT_CARD'
+  accountType: 'CASH' | 'BANK'
   currency: string
   balance: number
   branch?: string
@@ -30,7 +30,7 @@ const AddAccountModal = ({ show, onHide, onSuccess }: AddAccountModalProps) => {
   } = useForm<AccountFormData>({
     resolver: yupResolver(cashAccountSchema),
     defaultValues: {
-      currency: 'USD',
+      currency: 'UZS',
       balance: 0,
     },
   })
@@ -87,7 +87,6 @@ const AddAccountModal = ({ show, onHide, onSuccess }: AddAccountModalProps) => {
                   <option value="">Выберите тип</option>
                   <option value="CASH">Наличные</option>
                   <option value="BANK">Банковский счет</option>
-                  <option value="CREDIT_CARD">Кредитная карта</option>
                 </Form.Select>
                 <Form.Control.Feedback type="invalid">
                   {errors.accountType?.message}
@@ -99,10 +98,10 @@ const AddAccountModal = ({ show, onHide, onSuccess }: AddAccountModalProps) => {
               <Form.Group className="mb-3">
                 <Form.Label>Валюта *</Form.Label>
                 <Form.Select {...register('currency')} isInvalid={!!errors.currency}>
-                  <option value="USD">USD</option>
-                  <option value="EUR">EUR</option>
-                  <option value="RUB">RUB</option>
-                  <option value="KZT">KZT</option>
+                  <option value="UZS">UZS - Узбекский сум</option>
+                  <option value="USD">USD - Доллар США</option>
+                  <option value="EUR">EUR - Евро</option>
+                  <option value="RUB">RUB - Российский рубль</option>
                 </Form.Select>
                 <Form.Control.Feedback type="invalid">
                   {errors.currency?.message}

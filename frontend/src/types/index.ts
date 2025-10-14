@@ -60,7 +60,7 @@ export interface DashboardMetrics {
 export interface CashAccount {
   id: number
   name: string
-  accountType: 'CASH' | 'BANK' | 'CREDIT_CARD'
+  accountType: 'CASH' | 'BANK'
   currency: string
   balance: number
   branch?: string
@@ -211,4 +211,153 @@ export interface FilterParams {
   type?: string
   client?: string
   branch?: string
+}
+
+// Client Types
+export interface Client {
+  id: number
+  name: string
+  inn: string
+  contactPerson: string
+  phone: string
+  email: string
+  address: string
+  isActive: boolean
+  totalRevenue: number
+  totalDebt: number
+  createdAt: string
+  updatedAt: string
+}
+
+export interface ReconciliationAct {
+  clientId: number
+  clientName: string
+  period: string
+  startDate: string
+  endDate: string
+  transactions: ReconciliationTransaction[]
+  totalIncome: number
+  totalExpense: number
+  balance: number
+  generatedAt: string
+}
+
+export interface ReconciliationTransaction {
+  id: number
+  date: string
+  description: string
+  type: 'INCOME' | 'EXPENSE'
+  amount: number
+  documentNumber: string
+}
+
+// Team Types
+export interface TeamMember {
+  id: number
+  firstName: string
+  lastName: string
+  email: string
+  phone: string
+  position: string
+  department: string
+  role: UserRole
+  salary: number
+  hireDate: string
+  isActive: boolean
+  avatar?: string
+  createdAt: string
+  updatedAt: string
+}
+
+export interface Department {
+  id: number
+  name: string
+  description: string
+  headId?: number
+  memberCount: number
+}
+
+// Warehouse Types
+export interface WarehouseItem {
+  id: number
+  name: string
+  sku: string
+  category: string
+  quantity: number
+  unit: string
+  purchasePrice: number
+  salePrice: number
+  minStock: number
+  location: string
+  supplier: string
+  lastRestocked: string
+  createdAt: string
+  updatedAt: string
+}
+
+export interface StockMovement {
+  id: number
+  itemId: number
+  itemName: string
+  type: 'IN' | 'OUT' | 'ADJUSTMENT'
+  quantity: number
+  reason: string
+  performedBy: string
+  date: string
+  notes?: string
+}
+
+export interface WarehouseStats {
+  totalItems: number
+  totalValue: number
+  lowStockItems: number
+  outOfStockItems: number
+  categories: CategoryStats[]
+}
+
+export interface CategoryStats {
+  category: string
+  itemCount: number
+  totalValue: number
+}
+
+// Settings Types
+export interface SystemSettings {
+  companyName: string
+  companyInn: string
+  companyAddress: string
+  companyPhone: string
+  companyEmail: string
+  defaultCurrency: string
+  fiscalYearStart: string
+  language: string
+  timezone: string
+}
+
+export interface UserSettings {
+  userId: number
+  notifications: NotificationSettings
+  security: SecuritySettings
+  preferences: UserPreferences
+}
+
+export interface NotificationSettings {
+  emailNotifications: boolean
+  paymentDueReminders: boolean
+  contractExpiryReminders: boolean
+  lowStockAlerts: boolean
+  debtOverdueAlerts: boolean
+}
+
+export interface SecuritySettings {
+  twoFactorEnabled: boolean
+  sessionTimeout: number
+  lastPasswordChange: string
+}
+
+export interface UserPreferences {
+  theme: 'light' | 'dark'
+  language: string
+  dateFormat: string
+  numberFormat: string
 }
