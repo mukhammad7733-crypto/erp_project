@@ -8,15 +8,13 @@ import { toast } from 'react-toastify'
 interface AddClientModalProps {
   show: boolean
   onHide: () => void
-  onSuccess: () => void
+  onSuccess: (data: ClientFormData) => void
 }
 
 interface ClientFormData {
   name: string
-  inn: string
   contactPerson: string
   phone: string
-  email: string
   address: string
 }
 
@@ -37,10 +35,8 @@ const AddClientModal = ({ show, onHide, onSuccess }: AddClientModalProps) => {
     try {
       // Имитация API запроса
       await new Promise(resolve => setTimeout(resolve, 500))
-      console.log('Новый клиент:', data)
-      toast.success('Клиент успешно добавлен!')
+      onSuccess(data)
       reset()
-      onSuccess()
       onHide()
     } catch (error) {
       toast.error('Ошибка при добавлении клиента')
@@ -81,22 +77,7 @@ const AddClientModal = ({ show, onHide, onSuccess }: AddClientModalProps) => {
               </Form.Group>
             </Col>
 
-            <Col md={6}>
-              <Form.Group className="mb-3">
-                <Form.Label>ИНН *</Form.Label>
-                <Form.Control
-                  type="text"
-                  {...register('inn')}
-                  isInvalid={!!errors.inn}
-                  placeholder="123456789"
-                />
-                <Form.Control.Feedback type="invalid">
-                  {errors.inn?.message}
-                </Form.Control.Feedback>
-              </Form.Group>
-            </Col>
-
-            <Col md={6}>
+            <Col md={12}>
               <Form.Group className="mb-3">
                 <Form.Label>Контактное лицо *</Form.Label>
                 <Form.Control
@@ -111,7 +92,7 @@ const AddClientModal = ({ show, onHide, onSuccess }: AddClientModalProps) => {
               </Form.Group>
             </Col>
 
-            <Col md={6}>
+            <Col md={12}>
               <Form.Group className="mb-3">
                 <Form.Label>Телефон *</Form.Label>
                 <Form.Control
@@ -122,21 +103,6 @@ const AddClientModal = ({ show, onHide, onSuccess }: AddClientModalProps) => {
                 />
                 <Form.Control.Feedback type="invalid">
                   {errors.phone?.message}
-                </Form.Control.Feedback>
-              </Form.Group>
-            </Col>
-
-            <Col md={6}>
-              <Form.Group className="mb-3">
-                <Form.Label>Email *</Form.Label>
-                <Form.Control
-                  type="email"
-                  {...register('email')}
-                  isInvalid={!!errors.email}
-                  placeholder="info@company.uz"
-                />
-                <Form.Control.Feedback type="invalid">
-                  {errors.email?.message}
                 </Form.Control.Feedback>
               </Form.Group>
             </Col>

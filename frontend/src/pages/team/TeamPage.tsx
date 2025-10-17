@@ -4,12 +4,16 @@ import { mockTeamMembers, mockDepartments } from '../../services/mockData'
 import { TeamMember, Department } from '../../types'
 import { formatCurrency, formatDate } from '../../utils/formatters'
 import AddTeamMemberModal from '../../components/team/AddTeamMemberModal'
+import TeamMemberDetailsModal from '../../components/team/TeamMemberDetailsModal'
 
 const TeamPage = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedDepartment, setSelectedDepartment] = useState<string>('all')
   const [selectedStatus, setSelectedStatus] = useState<string>('all')
   const [showAddModal, setShowAddModal] = useState(false)
+  const [showDetailsModal, setShowDetailsModal] = useState(false)
+  const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null)
+  const [isTableExpanded, setIsTableExpanded] = useState(false)
 
   // Filter team members
   const filteredMembers = mockTeamMembers.filter(member => {
@@ -61,6 +65,11 @@ const TeamPage = () => {
   const handleAddSuccess = () => {
     // В реальном приложении здесь будет перезагрузка списка сотрудников
     console.log('Сотрудник добавлен, список обновлен')
+  }
+
+  const handleViewDetails = (member: TeamMember) => {
+    setSelectedMember(member)
+    setShowDetailsModal(true)
   }
 
   return (
@@ -196,10 +205,20 @@ const TeamPage = () => {
         <Card.Header className="bg-white border-bottom">
           <Row className="align-items-center">
             <Col md={4}>
-              <h5 className="mb-0">
-                <i className="bi bi-list-ul me-2"></i>
-                Список сотрудников
-              </h5>
+              <div className="d-flex justify-content-between align-items-center">
+                <h5 className="mb-0">
+                  <i className="bi bi-list-ul me-2"></i>
+                  Список сотрудников
+                </h5>
+                <Button
+                  variant="outline-secondary"
+                  size="sm"
+                  onClick={() => setIsTableExpanded(!isTableExpanded)}
+                >
+                  <i className={`bi bi-${isTableExpanded ? 'arrows-angle-contract' : 'arrows-angle-expand'} me-1`}></i>
+                  {isTableExpanded ? 'Свернуть' : 'Показать все'}
+                </Button>
+              </div>
             </Col>
             <Col md={8}>
               <Row className="g-2">
@@ -244,7 +263,7 @@ const TeamPage = () => {
           </Row>
         </Card.Header>
         <Card.Body className="p-0">
-          <div style={{ maxHeight: '600px', overflowY: 'auto' }}>
+          <div style={{ maxHeight: isTableExpanded ? 'none' : '600px', overflowY: isTableExpanded ? 'visible' : 'auto' }}>
             <Table striped hover responsive className="mb-0">
               <thead className="table-light sticky-top">
                 <tr>
@@ -261,7 +280,12 @@ const TeamPage = () => {
               </thead>
               <tbody>
                 {filteredMembers.map(member => (
-                  <tr key={member.id}>
+                  <tr
+                    key={member.id}
+                    onClick={() => handleViewDetails(member)}
+                    style={{ cursor: 'pointer' }}
+                    className="table-row-hover"
+                  >
                     <td>{member.id}</td>
                     <td>
                       <div className="d-flex align-items-center">
@@ -293,8 +317,13 @@ const TeamPage = () => {
                         {member.isActive ? 'Активен' : 'Неактивен'}
                       </Badge>
                     </td>
-                    <td>
-                      <Button variant="link" size="sm" className="text-muted p-0">
+                    <td onClick={(e) => e.stopPropagation()}>
+                      <Button
+                        variant="link"
+                        size="sm"
+                        className="text-muted p-0"
+                        onClick={() => handleViewDetails(member)}
+                      >
                         <i className="bi bi-three-dots-vertical"></i>
                       </Button>
                     </td>
@@ -323,11 +352,17 @@ const TeamPage = () => {
         </Card.Footer>
       </Card>
 
-      {/* Add Team Member Modal */}
+      {/* Modals */}
       <AddTeamMemberModal
         show={showAddModal}
         onHide={() => setShowAddModal(false)}
         onSuccess={handleAddSuccess}
+      />
+
+      <TeamMemberDetailsModal
+        show={showDetailsModal}
+        onHide={() => setShowDetailsModal(false)}
+        member={selectedMember}
       />
     </Container>
   )

@@ -67,10 +67,8 @@ export const paymentSchema = yup.object({
 
 export const clientSchema = yup.object({
   name: yup.string().required('Требуется название компании'),
-  inn: yup.string().required('Требуется ИНН').min(9, 'ИНН должен содержать минимум 9 символов'),
   contactPerson: yup.string().required('Требуется контактное лицо'),
   phone: yup.string().required('Требуется номер телефона'),
-  email: yup.string().email('Неверный формат email').required('Требуется email'),
   address: yup.string().required('Требуется адрес'),
 })
 

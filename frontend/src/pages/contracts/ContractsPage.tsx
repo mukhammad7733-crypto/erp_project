@@ -6,6 +6,7 @@ import { formatCurrency, formatDate } from '../../utils/formatters'
 import LoadingSpinner from '../../components/common/LoadingSpinner'
 import PageHeader from '../../components/common/PageHeader'
 import AddContractModal from '../../components/contracts/AddContractModal'
+import ContractDetailsModal from '../../components/contracts/ContractDetailsModal'
 
 const ContractsPage = () => {
   const [contracts, setContracts] = useState<Contract[]>([])
@@ -13,6 +14,9 @@ const ContractsPage = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState('')
   const [showContractModal, setShowContractModal] = useState(false)
+  const [showDetailsModal, setShowDetailsModal] = useState(false)
+  const [selectedContract, setSelectedContract] = useState<Contract | null>(null)
+  const [isTableExpanded, setIsTableExpanded] = useState(false)
 
   useEffect(() => {
     loadContracts()
@@ -43,6 +47,11 @@ const ContractsPage = () => {
       default:
         return 'secondary'
     }
+  }
+
+  const handleViewDetails = (contract: Contract) => {
+    setSelectedContract(contract)
+    setShowDetailsModal(true)
   }
 
   if (loading) {
@@ -136,12 +145,23 @@ const ContractsPage = () => {
                       />
                     </InputGroup>
                   </Col>
+                  <Col>
+                    <Button
+                      variant="outline-secondary"
+                      size="sm"
+                      onClick={() => setIsTableExpanded(!isTableExpanded)}
+                    >
+                      <i className={`bi bi-${isTableExpanded ? 'arrows-angle-contract' : 'arrows-angle-expand'} me-1`}></i>
+                      {isTableExpanded ? 'Свернуть' : 'Все'}
+                    </Button>
+                  </Col>
                 </Row>
               </Col>
             </Row>
           </Card.Header>
           <Card.Body className="p-0">
-            <Table hover responsive className="mb-0">
+            <div style={{ maxHeight: isTableExpanded ? 'none' : '600px', overflowY: isTableExpanded ? 'visible' : 'auto' }}>
+              <Table hover responsive className="mb-0">
               <thead className="table-light">
                 <tr>
                   <th>Номер договора</th>
@@ -164,7 +184,12 @@ const ContractsPage = () => {
                   </tr>
                 ) : (
                   contracts.map((contract) => (
-                    <tr key={contract.id}>
+                    <tr
+                      key={contract.id}
+                      onClick={() => handleViewDetails(contract)}
+                      style={{ cursor: 'pointer' }}
+                      className="table-row-hover"
+                    >
                       <td>
                         <strong>{contract.contractNumber}</strong>
                       </td>
@@ -181,8 +206,13 @@ const ContractsPage = () => {
                       <td>{formatCurrency(contract.amount)}</td>
                       <td>{formatDate(contract.startDate)}</td>
                       <td>{formatDate(contract.endDate)}</td>
-                      <td>
-                        <Button variant="link" size="sm" className="p-0">
+                      <td onClick={(e) => e.stopPropagation()}>
+                        <Button
+                          variant="link"
+                          size="sm"
+                          className="p-0"
+                          onClick={() => handleViewDetails(contract)}
+                        >
                           <i className="bi bi-eye"></i>
                         </Button>
                       </td>
@@ -191,15 +221,22 @@ const ContractsPage = () => {
                 )}
               </tbody>
             </Table>
+            </div>
           </Card.Body>
         </Card>
       </Container>
 
-      {/* Modal */}
+      {/* Modals */}
       <AddContractModal
         show={showContractModal}
         onHide={() => setShowContractModal(false)}
         onSuccess={loadContracts}
+      />
+
+      <ContractDetailsModal
+        show={showDetailsModal}
+        onHide={() => setShowDetailsModal(false)}
+        contract={selectedContract}
       />
     </>
   )

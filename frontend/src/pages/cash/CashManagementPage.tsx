@@ -7,6 +7,7 @@ import LoadingSpinner from '../../components/common/LoadingSpinner'
 import PageHeader from '../../components/common/PageHeader'
 import AddAccountModal from '../../components/cash/AddAccountModal'
 import AddTransactionModal from '../../components/cash/AddTransactionModal'
+import TransactionDetailsModal from '../../components/cash/TransactionDetailsModal'
 
 const CashManagementPage = () => {
   const [accounts, setAccounts] = useState<CashAccount[]>([])
@@ -15,6 +16,9 @@ const CashManagementPage = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const [showAccountModal, setShowAccountModal] = useState(false)
   const [showTransactionModal, setShowTransactionModal] = useState(false)
+  const [showDetailsModal, setShowDetailsModal] = useState(false)
+  const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null)
+  const [isTableExpanded, setIsTableExpanded] = useState(false)
 
   useEffect(() => {
     loadData()
@@ -47,6 +51,11 @@ const CashManagementPage = () => {
       default:
         return 'secondary'
     }
+  }
+
+  const handleViewDetails = (transaction: Transaction) => {
+    setSelectedTransaction(transaction)
+    setShowDetailsModal(true)
   }
 
   if (loading) {
@@ -126,22 +135,37 @@ const CashManagementPage = () => {
                 <h5 className="mb-0">Последние транзакции</h5>
               </Col>
               <Col xs="auto">
-                <InputGroup>
-                  <InputGroup.Text>
-                    <i className="bi bi-search"></i>
-                  </InputGroup.Text>
-                  <Form.Control
-                    type="text"
-                    placeholder="Поиск транзакций..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                  />
-                </InputGroup>
+                <Row className="g-2">
+                  <Col>
+                    <InputGroup size="sm">
+                      <InputGroup.Text>
+                        <i className="bi bi-search"></i>
+                      </InputGroup.Text>
+                      <Form.Control
+                        type="text"
+                        placeholder="Поиск транзакций..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                      />
+                    </InputGroup>
+                  </Col>
+                  <Col>
+                    <Button
+                      variant="outline-secondary"
+                      size="sm"
+                      onClick={() => setIsTableExpanded(!isTableExpanded)}
+                    >
+                      <i className={`bi bi-${isTableExpanded ? 'arrows-angle-contract' : 'arrows-angle-expand'} me-1`}></i>
+                      {isTableExpanded ? 'Свернуть' : 'Все'}
+                    </Button>
+                  </Col>
+                </Row>
               </Col>
             </Row>
           </Card.Header>
           <Card.Body className="p-0">
-            <Table hover responsive className="mb-0">
+            <div style={{ maxHeight: isTableExpanded ? 'none' : '600px', overflowY: isTableExpanded ? 'visible' : 'auto' }}>
+              <Table hover responsive className="mb-0">
               <thead className="table-light">
                 <tr>
                   <th>Дата</th>
@@ -162,7 +186,12 @@ const CashManagementPage = () => {
                   </tr>
                 ) : (
                   transactions.map((transaction) => (
-                    <tr key={transaction.id}>
+                    <tr
+                      key={transaction.id}
+                      onClick={() => handleViewDetails(transaction)}
+                      style={{ cursor: 'pointer' }}
+                      className="table-row-hover"
+                    >
                       <td>{formatDate(transaction.date)}</td>
                       <td>{transaction.accountName}</td>
                       <td>
@@ -188,6 +217,7 @@ const CashManagementPage = () => {
                 )}
               </tbody>
             </Table>
+            </div>
           </Card.Body>
         </Card>
       </Container>
@@ -204,6 +234,12 @@ const CashManagementPage = () => {
         onHide={() => setShowTransactionModal(false)}
         onSuccess={loadData}
         accounts={accounts}
+      />
+
+      <TransactionDetailsModal
+        show={showDetailsModal}
+        onHide={() => setShowDetailsModal(false)}
+        transaction={selectedTransaction}
       />
     </>
   )

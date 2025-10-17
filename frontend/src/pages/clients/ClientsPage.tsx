@@ -1,20 +1,28 @@
 import { useState } from 'react'
-import { Container, Row, Col, Card, Badge, Table, Button } from 'react-bootstrap'
+import { Container, Row, Col, Card, Badge, Table, Button, Form, InputGroup } from 'react-bootstrap'
 import { mockClients, generateReconciliationAct } from '../../services/mockData'
 import { Client, ReconciliationAct } from '../../types'
 import { formatCurrency, formatDate } from '../../utils/formatters'
 import AddClientModal from '../../components/clients/AddClientModal'
+import ClientDetailsModal from '../../components/clients/ClientDetailsModal'
 import { toast } from 'react-toastify'
 
 const ClientsPage = () => {
+  const [clients, setClients] = useState<Client[]>(mockClients)
   const [selectedClient, setSelectedClient] = useState<Client | null>(null)
   const [reconciliationAct, setReconciliationAct] = useState<ReconciliationAct | null>(null)
   const [showAddModal, setShowAddModal] = useState(false)
+  const [showDetailsModal, setShowDetailsModal] = useState(false)
+  const [clientForDetails, setClientForDetails] = useState<Client | null>(null)
+  const [isTableExpanded, setIsTableExpanded] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
 
   const handleClientSelect = (client: Client) => {
     setSelectedClient(client)
     // Generate reconciliation act for the selected client
-    const act = generateReconciliationAct(client.id)
+    const startDate = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString()
+    const endDate = new Date().toISOString()
+    const act = generateReconciliationAct(client.id, startDate, endDate)
     setReconciliationAct(act)
   }
 
@@ -22,9 +30,30 @@ const ClientsPage = () => {
     setShowAddModal(true)
   }
 
-  const handleAddSuccess = () => {
-    // В реальном приложении здесь будет перезагрузка списка клиентов
-    console.log('Клиент добавлен, список обновлен')
+  const handleAddSuccess = (newClientData: { name: string; contactPerson: string; phone: string; address: string }) => {
+    const newClient: Client = {
+      id: clients.length > 0 ? Math.max(...clients.map(c => c.id)) + 1 : 1,
+      name: newClientData.name,
+      inn: '', // Оставляем пустым, так как мы убрали это поле из формы
+      contactPerson: newClientData.contactPerson,
+      phone: newClientData.phone,
+      email: '', // Оставляем пустым, так как мы убрали это поле из формы
+      address: newClientData.address,
+      isActive: true,
+      totalRevenue: 0,
+      totalDebt: 0,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    }
+
+    setClients([...clients, newClient])
+    toast.success('Клиент успешно добавлен!')
+  }
+
+  const handleViewDetails = (client: Client, e: React.MouseEvent) => {
+    e.stopPropagation()
+    setClientForDetails(client)
+    setShowDetailsModal(true)
   }
 
   const handlePrint = () => {
@@ -43,6 +72,11 @@ const ClientsPage = () => {
     }
     toast.info('Экспорт в Excel будет реализован')
   }
+
+  // Фильтрация клиентов по поисковому запросу
+  const filteredClients = clients.filter(client =>
+    client.contactPerson.toLowerCase().includes(searchQuery.toLowerCase())
+  )
 
   return (
     <Container fluid className="p-4">
@@ -65,13 +99,40 @@ const ClientsPage = () => {
         <Col lg={4} xl={3} className="mb-4">
           <Card>
             <Card.Header className="bg-primary text-white">
-              <h5 className="mb-0">
+              <h5 className="mb-2">
                 <i className="bi bi-list-ul me-2"></i>
                 Список клиентов
               </h5>
+              <InputGroup size="sm">
+                <InputGroup.Text className="bg-white">
+                  <i className="bi bi-search"></i>
+                </InputGroup.Text>
+                <Form.Control
+                  type="text"
+                  placeholder="Поиск по имени контактного лица..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="bg-white"
+                />
+                {searchQuery && (
+                  <Button
+                    variant="outline-secondary"
+                    onClick={() => setSearchQuery('')}
+                    title="Очистить"
+                  >
+                    <i className="bi bi-x"></i>
+                  </Button>
+                )}
+              </InputGroup>
             </Card.Header>
             <Card.Body className="p-0" style={{ maxHeight: '75vh', overflowY: 'auto' }}>
-              {mockClients.map((client) => (
+              {filteredClients.length === 0 ? (
+                <div className="p-4 text-center text-muted">
+                  <i className="bi bi-search" style={{ fontSize: '2rem' }}></i>
+                  <p className="mb-0 mt-2">Клиенты не найдены</p>
+                </div>
+              ) : (
+                filteredClients.map((client) => (
                 <div
                   key={client.id}
                   className={`p-3 border-bottom cursor-pointer ${
@@ -90,36 +151,15 @@ const ClientsPage = () => {
                     }
                   }}
                 >
-                  <div className="d-flex justify-content-between align-items-start mb-2">
-                    <h6 className="mb-0 fw-bold">{client.name}</h6>
+                  <div className="d-flex justify-content-between align-items-center">
+                    <h6 className="mb-0 fw-bold">{client.contactPerson}</h6>
                     <Badge bg={client.isActive ? 'success' : 'secondary'}>
                       {client.isActive ? 'Активен' : 'Неактивен'}
                     </Badge>
                   </div>
-                  <div className="small text-muted mb-1">
-                    <i className="bi bi-building me-1"></i>
-                    ИНН: {client.inn}
-                  </div>
-                  <div className="small text-muted mb-1">
-                    <i className="bi bi-person me-1"></i>
-                    {client.contactPerson}
-                  </div>
-                  <div className="small mb-2">
-                    <i className="bi bi-telephone me-1"></i>
-                    {client.phone}
-                  </div>
-                  <div className="d-flex justify-content-between small">
-                    <span className="text-success">
-                      Доход: {formatCurrency(client.totalRevenue)}
-                    </span>
-                    {client.totalDebt > 0 && (
-                      <span className="text-danger">
-                        Долг: {formatCurrency(client.totalDebt)}
-                      </span>
-                    )}
-                  </div>
                 </div>
-              ))}
+              ))
+              )}
             </Card.Body>
           </Card>
         </Col>
@@ -188,8 +228,18 @@ const ClientsPage = () => {
 
                 {/* Transactions Table */}
                 <div className="mb-4">
-                  <h6 className="mb-3">Операции:</h6>
-                  <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
+                  <div className="d-flex justify-content-between align-items-center mb-3">
+                    <h6 className="mb-0">Операции:</h6>
+                    <Button
+                      variant="outline-secondary"
+                      size="sm"
+                      onClick={() => setIsTableExpanded(!isTableExpanded)}
+                    >
+                      <i className={`bi bi-${isTableExpanded ? 'arrows-angle-contract' : 'arrows-angle-expand'} me-1`}></i>
+                      {isTableExpanded ? 'Свернуть' : 'Показать все'}
+                    </Button>
+                  </div>
+                  <div style={{ maxHeight: isTableExpanded ? 'none' : '400px', overflowY: isTableExpanded ? 'visible' : 'auto' }}>
                     <Table striped bordered hover responsive>
                       <thead className="table-light sticky-top">
                         <tr>
@@ -272,11 +322,17 @@ const ClientsPage = () => {
         </Col>
       </Row>
 
-      {/* Add Client Modal */}
+      {/* Modals */}
       <AddClientModal
         show={showAddModal}
         onHide={() => setShowAddModal(false)}
         onSuccess={handleAddSuccess}
+      />
+
+      <ClientDetailsModal
+        show={showDetailsModal}
+        onHide={() => setShowDetailsModal(false)}
+        client={clientForDetails}
       />
     </Container>
   )

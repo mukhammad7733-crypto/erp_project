@@ -43,7 +43,7 @@ const DashboardPage = () => {
       <Container fluid className="py-4">
         {/* Summary Cards */}
         <Row className="g-4 mb-4">
-          <Col md={6} lg={3}>
+          <Col md={6}>
             <Card className="border-0 shadow-sm h-100 metric-card metric-card-primary">
               <Card.Body>
                 <div className="d-flex justify-content-between align-items-center">
@@ -65,68 +65,22 @@ const DashboardPage = () => {
             </Card>
           </Col>
 
-          <Col md={6} lg={3}>
-            <Card className="border-0 shadow-sm h-100 metric-card metric-card-success">
+          <Col md={6}>
+            <Card className="border-0 shadow-sm h-100 metric-card metric-card-danger">
               <Card.Body>
                 <div className="d-flex justify-content-between align-items-center">
                   <div>
                     <div className="text-muted small mb-2">
-                      <i className="bi bi-file-earmark-text me-1"></i>
-                      Активные договоры
+                      <i className="bi bi-arrow-down-circle me-1"></i>
+                      Задолженность перед поставщиком
                     </div>
-                    <h3 className="mb-0 fw-bold">{formatNumber(summary?.totalActiveContracts || 0)}</h3>
-                    <small className="text-success">
-                      <i className="bi bi-arrow-up"></i> 3 this month
+                    <h3 className="mb-0 fw-bold">{formatCurrency(summary?.totalSupplierDebts || 0)}</h3>
+                    <small className="text-danger">
+                      <i className="bi bi-exclamation-triangle"></i> Требует внимания
                     </small>
                   </div>
-                  <div className="metric-icon bg-success">
-                    <i className="bi bi-file-earmark-check text-white"></i>
-                  </div>
-                </div>
-              </Card.Body>
-            </Card>
-          </Col>
-
-          <Col md={6} lg={3}>
-            <Card className="border-0 shadow-sm h-100 metric-card metric-card-warning">
-              <Card.Body>
-                <div className="d-flex justify-content-between align-items-center">
-                  <div>
-                    <div className="text-muted small mb-2">
-                      <i className="bi bi-credit-card me-1"></i>
-                      Общая задолженность
-                    </div>
-                    <h3 className="mb-0 fw-bold">
-                      {formatCurrency((summary?.totalSupplierDebts || 0) + (summary?.totalClientDebts || 0))}
-                    </h3>
-                    <small className="text-warning">
-                      <i className="bi bi-exclamation-circle"></i> 8 pending
-                    </small>
-                  </div>
-                  <div className="metric-icon bg-warning">
-                    <i className="bi bi-credit-card-2-back text-white"></i>
-                  </div>
-                </div>
-              </Card.Body>
-            </Card>
-          </Col>
-
-          <Col md={6} lg={3}>
-            <Card className="border-0 shadow-sm h-100 metric-card metric-card-info">
-              <Card.Body>
-                <div className="d-flex justify-content-between align-items-center">
-                  <div>
-                    <div className="text-muted small mb-2">
-                      <i className="bi bi-graph-up me-1"></i>
-                      Прибыль за месяц
-                    </div>
-                    <h3 className="mb-0 fw-bold">{formatCurrency(summary?.monthlyProfit || 0)}</h3>
-                    <small className="text-success">
-                      <i className="bi bi-arrow-up"></i> +8.3%
-                    </small>
-                  </div>
-                  <div className="metric-icon bg-info">
-                    <i className="bi bi-graph-up-arrow text-white"></i>
+                  <div className="metric-icon bg-danger">
+                    <i className="bi bi-cash-coin text-white"></i>
                   </div>
                 </div>
               </Card.Body>

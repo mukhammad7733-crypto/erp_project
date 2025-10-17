@@ -7,6 +7,7 @@ import LoadingSpinner from '../../components/common/LoadingSpinner'
 import PageHeader from '../../components/common/PageHeader'
 import AddDebtModal from '../../components/debts/AddDebtModal'
 import RecordPaymentModal from '../../components/debts/RecordPaymentModal'
+import DebtDetailsModal from '../../components/debts/DebtDetailsModal'
 
 const DebtsPage = () => {
   const [debts, setDebts] = useState<Debt[]>([])
@@ -15,7 +16,11 @@ const DebtsPage = () => {
   const [activeTab, setActiveTab] = useState<'all' | 'supplier' | 'client'>('all')
   const [showDebtModal, setShowDebtModal] = useState(false)
   const [showPaymentModal, setShowPaymentModal] = useState(false)
+  const [showDetailsModal, setShowDetailsModal] = useState(false)
   const [selectedDebt, setSelectedDebt] = useState<Debt | null>(null)
+  const [isAllTableExpanded, setIsAllTableExpanded] = useState(false)
+  const [isSupplierTableExpanded, setIsSupplierTableExpanded] = useState(false)
+  const [isClientTableExpanded, setIsClientTableExpanded] = useState(false)
 
   useEffect(() => {
     loadDebts()
@@ -49,6 +54,16 @@ const DebtsPage = () => {
   }
 
   const handlePayDebt = (debt: Debt) => {
+    setSelectedDebt(debt)
+    setShowPaymentModal(true)
+  }
+
+  const handleViewDetails = (debt: Debt) => {
+    setSelectedDebt(debt)
+    setShowDetailsModal(true)
+  }
+
+  const handlePayFromDetails = (debt: Debt) => {
     setSelectedDebt(debt)
     setShowPaymentModal(true)
   }
@@ -170,17 +185,21 @@ const DebtsPage = () => {
                 <h5 className="mb-0">Все задолженности</h5>
               </Col>
               <Col xs="auto">
-                <InputGroup size="sm">
-                  <InputGroup.Text>
-                    <i className="bi bi-search"></i>
-                  </InputGroup.Text>
-                  <Form.Control
-                    type="text"
-                    placeholder="Поиск задолженностей..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                  />
-                </InputGroup>
+                <Row className="g-2">
+                  <Col>
+                    <InputGroup size="sm">
+                      <InputGroup.Text>
+                        <i className="bi bi-search"></i>
+                      </InputGroup.Text>
+                      <Form.Control
+                        type="text"
+                        placeholder="Поиск задолженностей..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                      />
+                    </InputGroup>
+                  </Col>
+                </Row>
               </Col>
             </Row>
           </Card.Header>
@@ -191,7 +210,20 @@ const DebtsPage = () => {
               className="px-3 pt-2"
             >
               <Tab eventKey="all" title="Все задолженности">
-                <Table hover responsive className="mb-0">
+                <div className="p-3 bg-light border-bottom">
+                  <div className="d-flex justify-content-end">
+                    <Button
+                      variant="outline-secondary"
+                      size="sm"
+                      onClick={() => setIsAllTableExpanded(!isAllTableExpanded)}
+                    >
+                      <i className={`bi bi-${isAllTableExpanded ? 'arrows-angle-contract' : 'arrows-angle-expand'} me-1`}></i>
+                      {isAllTableExpanded ? 'Свернуть' : 'Показать все'}
+                    </Button>
+                  </div>
+                </div>
+                <div style={{ maxHeight: isAllTableExpanded ? 'none' : '600px', overflowY: isAllTableExpanded ? 'visible' : 'auto' }}>
+                  <Table hover responsive className="mb-0">
                   <thead className="table-light">
                     <tr>
                       <th>Тип</th>
@@ -214,7 +246,12 @@ const DebtsPage = () => {
                       </tr>
                     ) : (
                       filteredDebts.map((debt) => (
-                        <tr key={debt.id}>
+                        <tr
+                          key={debt.id}
+                          onClick={() => handleViewDetails(debt)}
+                          style={{ cursor: 'pointer' }}
+                          className="table-row-hover"
+                        >
                           <td>
                             <Badge bg={debt.type === 'SUPPLIER' ? 'danger' : 'success'}>
                               {debt.type === 'SUPPLIER' ? 'Поставщик' : 'Клиент'}
@@ -235,7 +272,7 @@ const DebtsPage = () => {
                               {debt.status}
                             </Badge>
                           </td>
-                          <td>
+                          <td onClick={(e) => e.stopPropagation()}>
                             <Button
                               variant="outline-primary"
                               size="sm"
@@ -249,9 +286,23 @@ const DebtsPage = () => {
                     )}
                   </tbody>
                 </Table>
+                </div>
               </Tab>
               <Tab eventKey="supplier" title={`Поставщики (${supplierDebts.length})`}>
-                <Table hover responsive className="mb-0">
+                <div className="p-3 bg-light border-bottom">
+                  <div className="d-flex justify-content-end">
+                    <Button
+                      variant="outline-secondary"
+                      size="sm"
+                      onClick={() => setIsSupplierTableExpanded(!isSupplierTableExpanded)}
+                    >
+                      <i className={`bi bi-${isSupplierTableExpanded ? 'arrows-angle-contract' : 'arrows-angle-expand'} me-1`}></i>
+                      {isSupplierTableExpanded ? 'Свернуть' : 'Показать все'}
+                    </Button>
+                  </div>
+                </div>
+                <div style={{ maxHeight: isSupplierTableExpanded ? 'none' : '600px', overflowY: isSupplierTableExpanded ? 'visible' : 'auto' }}>
+                  <Table hover responsive className="mb-0">
                   <thead className="table-light">
                     <tr>
                       <th>Контрагент</th>
@@ -272,7 +323,12 @@ const DebtsPage = () => {
                       </tr>
                     ) : (
                       filteredDebts.map((debt) => (
-                        <tr key={debt.id}>
+                        <tr
+                          key={debt.id}
+                          onClick={() => handleViewDetails(debt)}
+                          style={{ cursor: 'pointer' }}
+                          className="table-row-hover"
+                        >
                           <td><strong>{debt.counterparty}</strong></td>
                           <td>{debt.description}</td>
                           <td>{formatCurrency(debt.amount)}</td>
@@ -283,7 +339,7 @@ const DebtsPage = () => {
                               {debt.status}
                             </Badge>
                           </td>
-                          <td>
+                          <td onClick={(e) => e.stopPropagation()}>
                             <Button
                               variant="outline-primary"
                               size="sm"
@@ -297,9 +353,23 @@ const DebtsPage = () => {
                     )}
                   </tbody>
                 </Table>
+                </div>
               </Tab>
               <Tab eventKey="client" title={`Клиенты (${clientDebts.length})`}>
-                <Table hover responsive className="mb-0">
+                <div className="p-3 bg-light border-bottom">
+                  <div className="d-flex justify-content-end">
+                    <Button
+                      variant="outline-secondary"
+                      size="sm"
+                      onClick={() => setIsClientTableExpanded(!isClientTableExpanded)}
+                    >
+                      <i className={`bi bi-${isClientTableExpanded ? 'arrows-angle-contract' : 'arrows-angle-expand'} me-1`}></i>
+                      {isClientTableExpanded ? 'Свернуть' : 'Показать все'}
+                    </Button>
+                  </div>
+                </div>
+                <div style={{ maxHeight: isClientTableExpanded ? 'none' : '600px', overflowY: isClientTableExpanded ? 'visible' : 'auto' }}>
+                  <Table hover responsive className="mb-0">
                   <thead className="table-light">
                     <tr>
                       <th>Контрагент</th>
@@ -320,7 +390,12 @@ const DebtsPage = () => {
                       </tr>
                     ) : (
                       filteredDebts.map((debt) => (
-                        <tr key={debt.id}>
+                        <tr
+                          key={debt.id}
+                          onClick={() => handleViewDetails(debt)}
+                          style={{ cursor: 'pointer' }}
+                          className="table-row-hover"
+                        >
                           <td><strong>{debt.counterparty}</strong></td>
                           <td>{debt.description}</td>
                           <td>{formatCurrency(debt.amount)}</td>
@@ -331,7 +406,7 @@ const DebtsPage = () => {
                               {debt.status}
                             </Badge>
                           </td>
-                          <td>
+                          <td onClick={(e) => e.stopPropagation()}>
                             <Button
                               variant="outline-success"
                               size="sm"
@@ -345,6 +420,7 @@ const DebtsPage = () => {
                     )}
                   </tbody>
                 </Table>
+                </div>
               </Tab>
             </Tabs>
           </Card.Body>
@@ -363,6 +439,13 @@ const DebtsPage = () => {
         onHide={() => setShowPaymentModal(false)}
         onSuccess={loadDebts}
         debt={selectedDebt}
+      />
+
+      <DebtDetailsModal
+        show={showDetailsModal}
+        onHide={() => setShowDetailsModal(false)}
+        debt={selectedDebt}
+        onPayDebt={handlePayFromDetails}
       />
     </>
   )

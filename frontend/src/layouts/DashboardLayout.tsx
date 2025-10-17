@@ -156,10 +156,69 @@ const DashboardLayout = () => {
         </Offcanvas>
 
         {/* Main Content */}
-        <div className="flex-grow-1 bg-light">
+        <div className="flex-grow-1 bg-light" style={{ paddingBottom: 'max(70px, env(safe-area-inset-bottom))' }}>
           <Outlet />
         </div>
       </div>
+
+      {/* Mobile Bottom Navigation */}
+      <nav className="d-lg-none fixed-bottom bg-white border-top shadow-sm" style={{ paddingBottom: 'env(safe-area-inset-bottom)', zIndex: 1030 }}>
+        <div className="d-flex justify-content-around align-items-center" style={{ height: '60px' }}>
+          <Link
+            to="/"
+            className={`d-flex flex-column align-items-center justify-content-center text-decoration-none flex-fill ${
+              location.pathname === '/' ? 'text-primary' : 'text-muted'
+            }`}
+            style={{ minHeight: '44px', padding: '4px 0' }}
+          >
+            <i className={`bi bi-speedometer2 fs-5 ${location.pathname === '/' ? 'fw-bold' : ''}`}></i>
+            <small style={{ fontSize: '0.7rem', marginTop: '2px' }}>Главная</small>
+          </Link>
+
+          <Link
+            to="/clients"
+            className={`d-flex flex-column align-items-center justify-content-center text-decoration-none flex-fill ${
+              location.pathname === '/clients' ? 'text-primary' : 'text-muted'
+            }`}
+            style={{ minHeight: '44px', padding: '4px 0' }}
+          >
+            <i className={`bi bi-people fs-5 ${location.pathname === '/clients' ? 'fw-bold' : ''}`}></i>
+            <small style={{ fontSize: '0.7rem', marginTop: '2px' }}>Клиенты</small>
+          </Link>
+
+          <Link
+            to="/cash"
+            className={`d-flex flex-column align-items-center justify-content-center text-decoration-none flex-fill ${
+              location.pathname === '/cash' ? 'text-primary' : 'text-muted'
+            }`}
+            style={{ minHeight: '44px', padding: '4px 0' }}
+          >
+            <i className={`bi bi-cash-stack fs-5 ${location.pathname === '/cash' ? 'fw-bold' : ''}`}></i>
+            <small style={{ fontSize: '0.7rem', marginTop: '2px' }}>Касса</small>
+          </Link>
+
+          <Link
+            to="/warehouse"
+            className={`d-flex flex-column align-items-center justify-content-center text-decoration-none flex-fill ${
+              location.pathname === '/warehouse' ? 'text-primary' : 'text-muted'
+            }`}
+            style={{ minHeight: '44px', padding: '4px 0' }}
+          >
+            <i className={`bi bi-box-seam fs-5 ${location.pathname === '/warehouse' ? 'fw-bold' : ''}`}></i>
+            <small style={{ fontSize: '0.7rem', marginTop: '2px' }}>Склад</small>
+          </Link>
+
+          <Button
+            variant="link"
+            className="d-flex flex-column align-items-center justify-content-center text-decoration-none text-muted flex-fill border-0"
+            onClick={() => setShowSidebar(true)}
+            style={{ minHeight: '44px', padding: '4px 0' }}
+          >
+            <i className="bi bi-list fs-5"></i>
+            <small style={{ fontSize: '0.7rem', marginTop: '2px' }}>Ещё</small>
+          </Button>
+        </div>
+      </nav>
     </div>
   )
 }

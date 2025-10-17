@@ -1,15 +1,23 @@
 import { useState } from 'react'
 import { Container, Row, Col, Card, Table, Badge, Button, Form, InputGroup, Tabs, Tab } from 'react-bootstrap'
 import { mockWarehouseItems, mockStockMovements, mockWarehouseStats } from '../../services/mockData'
-import { WarehouseItem } from '../../types'
+import { WarehouseItem, StockMovement } from '../../types'
 import { formatCurrency, formatDate } from '../../utils/formatters'
 import AddWarehouseItemModal from '../../components/warehouse/AddWarehouseItemModal'
+import WarehouseItemDetailsModal from '../../components/warehouse/WarehouseItemDetailsModal'
+import StockMovementDetailsModal from '../../components/warehouse/StockMovementDetailsModal'
 
 const WarehousePage = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCategory, setSelectedCategory] = useState<string>('all')
   const [selectedStatus, setSelectedStatus] = useState<string>('all')
   const [showAddModal, setShowAddModal] = useState(false)
+  const [showItemDetailsModal, setShowItemDetailsModal] = useState(false)
+  const [showMovementDetailsModal, setShowMovementDetailsModal] = useState(false)
+  const [selectedItem, setSelectedItem] = useState<WarehouseItem | null>(null)
+  const [selectedMovement, setSelectedMovement] = useState<StockMovement | null>(null)
+  const [isItemsTableExpanded, setIsItemsTableExpanded] = useState(false)
+  const [isMovementsTableExpanded, setIsMovementsTableExpanded] = useState(false)
 
   // Get unique categories
   const categories = Array.from(new Set(mockWarehouseItems.map(item => item.category)))
@@ -62,6 +70,16 @@ const WarehousePage = () => {
   const handleAddSuccess = () => {
     // В реальном приложении здесь будет перезагрузка списка товаров
     console.log('Товар добавлен, список обновлен')
+  }
+
+  const handleViewItemDetails = (item: WarehouseItem) => {
+    setSelectedItem(item)
+    setShowItemDetailsModal(true)
+  }
+
+  const handleViewMovementDetails = (movement: StockMovement) => {
+    setSelectedMovement(movement)
+    setShowMovementDetailsModal(true)
   }
 
   return (
@@ -215,8 +233,8 @@ const WarehousePage = () => {
             <Tab eventKey="items">
               {/* Items Table */}
               <div className="p-3 bg-light border-bottom">
-                <Row className="g-2">
-                  <Col md={5}>
+                <Row className="g-2 align-items-center">
+                  <Col md={4}>
                     <InputGroup size="sm">
                       <InputGroup.Text>
                         <i className="bi bi-search"></i>
@@ -241,7 +259,7 @@ const WarehousePage = () => {
                       ))}
                     </Form.Select>
                   </Col>
-                  <Col md={4}>
+                  <Col md={3}>
                     <Form.Select
                       size="sm"
                       value={selectedStatus}
@@ -253,9 +271,20 @@ const WarehousePage = () => {
                       <option value="out_of_stock">Нет в наличии</option>
                     </Form.Select>
                   </Col>
+                  <Col md={2}>
+                    <Button
+                      variant="outline-secondary"
+                      size="sm"
+                      className="w-100"
+                      onClick={() => setIsItemsTableExpanded(!isItemsTableExpanded)}
+                    >
+                      <i className={`bi bi-${isItemsTableExpanded ? 'arrows-angle-contract' : 'arrows-angle-expand'} me-1`}></i>
+                      {isItemsTableExpanded ? 'Свернуть' : 'Все'}
+                    </Button>
+                  </Col>
                 </Row>
               </div>
-              <div style={{ maxHeight: '500px', overflowY: 'auto' }}>
+              <div style={{ maxHeight: isItemsTableExpanded ? 'none' : '500px', overflowY: isItemsTableExpanded ? 'visible' : 'auto' }}>
                 <Table striped hover responsive className="mb-0">
                   <thead className="table-light sticky-top">
                     <tr>
@@ -272,7 +301,12 @@ const WarehousePage = () => {
                   </thead>
                   <tbody>
                     {filteredItems.map(item => (
-                      <tr key={item.id}>
+                      <tr
+                        key={item.id}
+                        onClick={() => handleViewItemDetails(item)}
+                        style={{ cursor: 'pointer' }}
+                        className="table-row-hover"
+                      >
                         <td>{item.id}</td>
                         <td>
                           <div className="fw-semibold">{item.name}</div>
@@ -304,7 +338,20 @@ const WarehousePage = () => {
             </Tab>
             <Tab eventKey="movements">
               {/* Movements Table */}
-              <div style={{ maxHeight: '600px', overflowY: 'auto' }}>
+              <div className="p-3 bg-light border-bottom">
+                <div className="d-flex justify-content-between align-items-center">
+                  <h6 className="mb-0">История движений</h6>
+                  <Button
+                    variant="outline-secondary"
+                    size="sm"
+                    onClick={() => setIsMovementsTableExpanded(!isMovementsTableExpanded)}
+                  >
+                    <i className={`bi bi-${isMovementsTableExpanded ? 'arrows-angle-contract' : 'arrows-angle-expand'} me-1`}></i>
+                    {isMovementsTableExpanded ? 'Свернуть' : 'Показать все'}
+                  </Button>
+                </div>
+              </div>
+              <div style={{ maxHeight: isMovementsTableExpanded ? 'none' : '600px', overflowY: isMovementsTableExpanded ? 'visible' : 'auto' }}>
                 <Table striped hover responsive className="mb-0">
                   <thead className="table-light sticky-top">
                     <tr>
@@ -320,7 +367,12 @@ const WarehousePage = () => {
                   </thead>
                   <tbody>
                     {mockStockMovements.map(movement => (
-                      <tr key={movement.id}>
+                      <tr
+                        key={movement.id}
+                        onClick={() => handleViewMovementDetails(movement)}
+                        style={{ cursor: 'pointer' }}
+                        className="table-row-hover"
+                      >
                         <td>{movement.id}</td>
                         <td>{formatDate(movement.date)}</td>
                         <td>{movement.itemName}</td>
@@ -360,11 +412,23 @@ const WarehousePage = () => {
         </Card.Footer>
       </Card>
 
-      {/* Add Warehouse Item Modal */}
+      {/* Modals */}
       <AddWarehouseItemModal
         show={showAddModal}
         onHide={() => setShowAddModal(false)}
         onSuccess={handleAddSuccess}
+      />
+
+      <WarehouseItemDetailsModal
+        show={showItemDetailsModal}
+        onHide={() => setShowItemDetailsModal(false)}
+        item={selectedItem}
+      />
+
+      <StockMovementDetailsModal
+        show={showMovementDetailsModal}
+        onHide={() => setShowMovementDetailsModal(false)}
+        movement={selectedMovement}
       />
     </Container>
   )
